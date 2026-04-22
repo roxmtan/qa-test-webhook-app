@@ -8,6 +8,13 @@ const app = express();
 // Middleware to parse JSON bodies
 app.use(express.json());
 
+// Enable CORS for dashboard cross-origin requests
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
+
 // Set port and verify_token
 const port = process.env.PORT || 3000;
 const verifyToken = process.env.VERIFY_TOKEN;
