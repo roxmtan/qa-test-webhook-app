@@ -21,7 +21,7 @@ const verifyToken = process.env.VERIFY_TOKEN;
 
 // --- In-Memory Webhook Log Store ---
 const webhookLogs = [];
-const MAX_LOGS = 200;
+const MAX_LOGS = 500;
 
 function storeLog(entry) {
   webhookLogs.unshift(entry);
@@ -44,6 +44,23 @@ function logToSheet(data) {
 // Serve dashboard
 app.get('/dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, 'dashboard.html'));
+});
+
+// Auto-refreshing logs viewer
+app.get('/logs/live', (req, res) => {
+  res.send('<!DOCTYPE html>\n' +
+    '<html><head><meta charset="UTF-8"><title>Live Logs</title>' +
+    '<style>body{font-family:monospace;background:#1c2b33;color:#a7f3d0;padding:20px;}' +
+    'pre{white-space:pre-wrap;}</style></head>' +
+    '<body><h3 style="color:white;">Live Webhook Logs (auto-refresh 10s)</h3>' +
+    '<pre id="logs">Loading...</pre>' +
+    '<script>' +
+    'function refresh(){' +
+    'fetch("/logs?limit=500").then(function(r){return r.json();}).then(function(d){' +
+    'document.getElementById("logs").textContent=JSON.stringify(d,null,2);' +
+    '});}' +
+    'refresh();setInterval(refresh,10000);' +
+    '</script></body></html>');
 });
 
 // Route for GET requests (webhook verification)
