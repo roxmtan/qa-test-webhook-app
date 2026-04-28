@@ -124,7 +124,9 @@
   </div>
 <script>
 var DEFAULT_SERVERS = [
-  { name: "QA Test Webhook App", url: "https://qa-test-webhook-app.onrender.com" }
+  { name: "QA Test Webhook App", url: "https://qa-test-webhook-app.onrender.com" },
+  { name: "Biz Platform QA Webhook App", url: "https://biz-platform-qa-test-webhook-app.onrender.com" },
+  { name: "QA Test Webhook App-g9uv", url: "https://qa-test-webhook-app-g9uv.onrender.com" }
 ];
 var servers = JSON.parse(localStorage.getItem("webhook_servers") || "null") || DEFAULT_SERVERS;
 var allLogs = [];
@@ -231,7 +233,7 @@ function loadLogs() {
   if (!server) return;
   var el = document.getElementById("logList");
   el.innerHTML = "<div class=\"empty-state\">Loading logs from " + server.name + "...</div>";
-  fetch(server.url + "/logs?limit=100")
+  fetch(server.url + "/logs?limit=500")
     .then(function(res) { return res.json(); })
     .then(function(data) {
       allLogs = data.logs || [];
@@ -289,7 +291,6 @@ function filterLogs() {
   renderLogs(filtered);
 }
 
-// Event listeners
 document.getElementById("tabBar").addEventListener("click", function(e) {
   var tab = e.target.getAttribute("data-tab");
   if (tab) switchTab(tab);
@@ -300,7 +301,6 @@ document.getElementById("addServerBtn").addEventListener("click", addServer);
 document.getElementById("logSearch").addEventListener("input", filterLogs);
 document.getElementById("serverSelect").addEventListener("change", loadLogs);
 
-// Init
 refreshStatus();
 populateServerSelect();
 </script>
